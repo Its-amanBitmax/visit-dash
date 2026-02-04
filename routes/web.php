@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\AgentChatEvaluationController;
 use App\Http\Controllers\CenterVisitEvaluationController;
 use Illuminate\Support\Facades\Route;
@@ -36,4 +37,19 @@ Route::prefix('admin')->group(function () {
         Route::post('logout', [AdminAuthController::class, 'logout'])
             ->name('admin.logout');
     });
+});
+
+Route::middleware(['auth:admin', 'superadmin'])->group(function () {
+    Route::get('admin/manage-admins', [AdminManagementController::class, 'index'])
+        ->name('admin.management.index');
+    Route::get('admin/manage-admins/create', [AdminManagementController::class, 'create'])
+        ->name('admin.management.create');
+    Route::post('admin/manage-admins', [AdminManagementController::class, 'store'])
+        ->name('admin.management.store');
+    Route::get('admin/manage-admins/{id}/edit', [AdminManagementController::class, 'edit'])
+        ->name('admin.management.edit');
+    Route::put('admin/manage-admins/{id}', [AdminManagementController::class, 'update'])
+        ->name('admin.management.update');
+    Route::delete('admin/manage-admins/{id}', [AdminManagementController::class, 'destroy'])
+        ->name('admin.management.destroy');
 });
