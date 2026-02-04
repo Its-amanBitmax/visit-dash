@@ -34,7 +34,7 @@
                 <tbody>
                     @forelse ($admins as $admin)
                         <tr>
-                            <td>{{ $admin->id }}</td>
+                            <td>{{ $loop->iteration + ($admins->currentPage() - 1) * $admins->perPage() }}</td>
                             <td>{{ $admin->name }}</td>
                             <td>{{ $admin->username }}</td>
                             <td>{{ $admin->email }}</td>

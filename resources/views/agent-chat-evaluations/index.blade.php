@@ -42,7 +42,7 @@
                 <tbody>
                     @forelse ($evaluations as $evaluation)
                         <tr>
-                            <td>{{ $evaluation->id }}</td>
+                            <td>{{ $loop->iteration + ($evaluations->currentPage() - 1) * $evaluations->perPage() }}</td>
                             <td>{{ $evaluation->agent_id }} - {{ $evaluation->agent_name }}</td>
                             <td>{{ $evaluation->column001 }}</td>
                             <td>{{ $evaluation->overall_score }}</td>

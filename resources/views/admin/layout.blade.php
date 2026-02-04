@@ -483,7 +483,9 @@
                 <a class="{{ request()->is('agent-chat-evaluations*') ? 'active' : '' }}" href="{{ route('agent-chat-evaluations.index') }}">Agent Evaluation</a>
                 <a class="{{ request()->is('center-visit-evaluations*') ? 'active' : '' }}" href="{{ route('center-visit-evaluations.index') }}">Center Evaluation</a>
                 <a class="{{ request()->is('admin/chart-view') ? 'active' : '' }}" href="{{ route('admin.chart.view') }}">Chart View</a>
-                <a class="{{ request()->is('admin/manage-admins*') ? 'active' : '' }}" href="{{ route('admin.management.index') }}">Manage Admin</a>
+                @if (auth('admin')->check() && (int) auth('admin')->id() === 1)
+                    <a class="{{ request()->is('admin/manage-admins*') ? 'active' : '' }}" href="{{ route('admin.management.index') }}">Manage Admin</a>
+                @endif
                 <div class="section">System</div>
                 <a class="{{ request()->is('admin/settings') ? 'active' : '' }}" href="{{ url('/admin/settings') }}">Settings</a>
             </nav>
