@@ -54,20 +54,19 @@
         .header {
             position: relative;
             z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
             border-bottom: 2px solid #dbeafe;
             background: linear-gradient(90deg, #eff6ff, #ffffff);
             padding: 12px 14px;
             border-radius: 12px;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .header > div {
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
         }
 
         .brand .title {
@@ -82,10 +81,7 @@
             margin-top: 2px;
         }
 
-        .header-left {
-            display: grid;
-            gap: 6px;
-        }
+        .header-left { display: block; }
 
         .report-chip {
             display: inline-flex;
@@ -105,8 +101,9 @@
             text-align: right;
             font-size: 12px;
             color: var(--muted);
-            display: grid;
-            gap: 3px;
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
         }
 
         .section {
@@ -145,14 +142,19 @@
         }
 
         .overall {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
             margin-top: 8px;
             padding: 10px 12px;
             border-radius: 10px;
             border: 1px dashed #c7d2fe;
             background: #eef2ff;
+        }
+
+        .overall > div {
+            display: table-cell;
+            vertical-align: middle;
         }
 
         .overall .score {
@@ -182,13 +184,19 @@
             position: relative;
             z-index: 1;
             margin-top: 12px;
-            display: flex;
-            justify-content: space-between;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
             font-size: 11px;
             color: var(--muted);
             border-top: 1px solid var(--line);
             padding-top: 8px;
-            gap: 24px;
+        }
+
+        .footer > div {
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
         }
 
         .footer-right {
@@ -213,12 +221,10 @@
         </div>
 
         <div class="header">
-            <div class="brand">
-                <div class="header-left">
-                    <span class="report-chip">Confidential</span>
-                    <div class="title">Agent Chat Evaluation</div>
-                    <div class="subtitle">Internal Report</div>
-                </div>
+            <div>
+                <span class="report-chip">Confidential</span>
+                <div class="title">Agent Chat Evaluation</div>
+                <div class="subtitle">Internal Report</div>
             </div>
             <div class="meta">
                 <div>Report Summary</div>
@@ -280,7 +286,7 @@
         <div class="footer">
             <div>Bitmax Admin System</div>
             <div class="footer-right">
-                <div>Report ID: {{ $evaluation->id }}</div>
+                <div>Generated on {{ date('Y-m-d H:i:s') }}</div>
             </div>
         </div>
     </div>
