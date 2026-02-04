@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Models\AgentChatEvaluation;
 
 class AdminAuthController extends Controller
 {
@@ -35,6 +36,21 @@ class AdminAuthController extends Controller
     public function dashboard()
     {
         return view('admin.dashboard');
+    }
+
+    public function chartView()
+    {
+        $agentAverages = AgentChatEvaluation::query()
+            ->selectRaw('agent_name, AVG(overall_score) as avg_score')
+            ->groupBy('agent_name')
+            ->orderByDesc('avg_score')
+            ->limit(10)
+            ->get();
+
+        $labels = $agentAverages->pluck('agent_name');
+        $scores = $agentAverages->pluck('avg_score')->map(fn ($v) => round((float) $v, 2));
+
+        return view('admin.chart-view', compact('labels', 'scores'));
     }
 
     public function settings()

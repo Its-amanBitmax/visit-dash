@@ -289,6 +289,20 @@
             box-shadow: none;
         }
 
+        .btn-toggle {
+            background: #f8fafc;
+            color: #1f2937;
+            border-color: #e5e7eb;
+            box-shadow: none;
+        }
+
+        .btn-toggle.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 12px 20px rgba(37, 99, 235, 0.25);
+        }
+
         .btn-danger {
             background: #ef4444;
             box-shadow: 0 12px 20px rgba(239, 68, 68, 0.2);
@@ -370,7 +384,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 12px 14px;
             border-radius: 12px;
@@ -378,6 +393,18 @@
             font-size: 14px;
             font-family: inherit;
             background: #ffffff;
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #94a3b8 50%),
+                linear-gradient(135deg, #94a3b8 50%, transparent 50%);
+            background-position:
+                calc(100% - 18px) 50%,
+                calc(100% - 12px) 50%;
+            background-size: 6px 6px, 6px 6px;
+            background-repeat: no-repeat;
         }
 
         .form-group textarea {
@@ -434,6 +461,11 @@
     </style>
 </head>
 <body>
+    @php
+        $agentEvalCount = \App\Models\AgentChatEvaluation::count();
+        $centerEvalCount = \App\Models\CenterVisitEvaluation::count();
+        $agentAvgScore = round((float) \App\Models\AgentChatEvaluation::avg('overall_score'), 1);
+    @endphp
     <div class="layout">
         <aside>
             <div class="brand">
@@ -448,16 +480,17 @@
             <nav class="nav">
                 <a class="{{ request()->is('admin/dashboard') ? 'active' : '' }}" href="{{ url('/admin/dashboard') }}">Dashboard</a>
                 <div class="section">Management</div>
-                <a class="{{ request()->is('agent-chat-evaluations*') ? 'active' : '' }}" href="{{ route('agent-chat-evaluations.index') }}">Visits</a>
-                <a href="#">Reports</a>
+                <a class="{{ request()->is('agent-chat-evaluations*') ? 'active' : '' }}" href="{{ route('agent-chat-evaluations.index') }}">Agent Evaluation</a>
+                <a class="{{ request()->is('center-visit-evaluations*') ? 'active' : '' }}" href="{{ route('center-visit-evaluations.index') }}">Center Evaluation</a>
+                <a class="{{ request()->is('admin/chart-view') ? 'active' : '' }}" href="{{ route('admin.chart.view') }}">Chart View</a>
                 <a href="#">Agents</a>
                 <div class="section">System</div>
                 <a class="{{ request()->is('admin/settings') ? 'active' : '' }}" href="{{ url('/admin/settings') }}">Settings</a>
             </nav>
             <div class="aside-card">
-                <div class="label">Today</div>
-                <div class="value">128 Visits</div>
-                <div class="sub">Up 12% from yesterday</div>
+                <div class="label">Totals</div>
+                <div class="value">{{ $agentEvalCount }} Agent</div>
+                <div class="sub">{{ $centerEvalCount }} Center</div>
             </div>
         </aside>
 
@@ -476,16 +509,16 @@
             <main class="main">
                 <div class="stat-grid">
                     <div class="stat">
-                        <div class="label">Total Visits</div>
-                        <div class="value">1,248</div>
+                        <div class="label">Agent Evaluations</div>
+                        <div class="value">{{ $agentEvalCount }}</div>
                     </div>
                     <div class="stat">
-                        <div class="label">Active Agents</div>
-                        <div class="value">18</div>
+                        <div class="label">Center Evaluations</div>
+                        <div class="value">{{ $centerEvalCount }}</div>
                     </div>
                     <div class="stat">
-                        <div class="label">Pending Reports</div>
-                        <div class="value">24</div>
+                        <div class="label">Agent Avg Score</div>
+                        <div class="value">{{ $agentAvgScore }}</div>
                     </div>
                 </div>
                 @yield('content')
@@ -496,5 +529,6 @@
             </footer>
         </div>
     </div>
+    @stack('scripts')
 </body>
 </html>

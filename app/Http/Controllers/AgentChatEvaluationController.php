@@ -9,7 +9,20 @@ class AgentChatEvaluationController extends Controller
 {
     public function index()
     {
-        $evaluations = AgentChatEvaluation::latest()->paginate(10);
+        $search = trim((string) request('search'));
+
+        $evaluations = AgentChatEvaluation::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('agent_id', 'like', '%' . $search . '%')
+                        ->orWhere('agent_name', 'like', '%' . $search . '%')
+                        ->orWhere('project_name', 'like', '%' . $search . '%')
+                        ->orWhere('evaluator_name', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('agent-chat-evaluations.index', compact('evaluations'));
     }
@@ -52,6 +65,19 @@ class AgentChatEvaluationController extends Controller
         }
 
         return view('reports.agent-chat-evaluation-pdf', compact('evaluation'));
+    }
+
+    public function downloadAllPdf()
+    {
+        $evaluations = AgentChatEvaluation::latest()->get();
+
+        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.agent-chat-evaluation-pdf-all', compact('evaluations'));
+
+            return $pdf->download('agent-chat-evaluations-all.pdf');
+        }
+
+        return view('reports.agent-chat-evaluation-pdf-all', compact('evaluations'));
     }
 
     public function edit($id)

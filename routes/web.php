@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AgentChatEvaluationController;
+use App\Http\Controllers\CenterVisitEvaluationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AdminAuthController::class, 'showLoginForm']);
@@ -9,6 +10,13 @@ Route::get('/', [AdminAuthController::class, 'showLoginForm']);
 Route::resource('agent-chat-evaluations', AgentChatEvaluationController::class);
 Route::get('agent-chat-evaluations/{id}/pdf', [AgentChatEvaluationController::class, 'downloadPdf'])
     ->name('agent-chat-evaluations.pdf');
+Route::get('agent-chat-evaluations/pdf/all', [AgentChatEvaluationController::class, 'downloadAllPdf'])
+    ->name('agent-chat-evaluations.pdf.all');
+Route::resource('center-visit-evaluations', CenterVisitEvaluationController::class);
+Route::get('center-visit-evaluations/{id}/pdf', [CenterVisitEvaluationController::class, 'downloadPdf'])
+    ->name('center-visit-evaluations.pdf');
+Route::get('center-visit-evaluations/pdf/all', [CenterVisitEvaluationController::class, 'downloadAllPdf'])
+    ->name('center-visit-evaluations.pdf.all');
 
 Route::prefix('admin')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])
@@ -19,6 +27,8 @@ Route::prefix('admin')->group(function () {
     Route::middleware('auth:admin')->group(function () {
         Route::get('dashboard', [AdminAuthController::class, 'dashboard'])
             ->name('admin.dashboard');
+        Route::get('chart-view', [AdminAuthController::class, 'chartView'])
+            ->name('admin.chart.view');
         Route::get('settings', [AdminAuthController::class, 'settings'])
             ->name('admin.settings');
         Route::post('settings', [AdminAuthController::class, 'updateSettings'])
