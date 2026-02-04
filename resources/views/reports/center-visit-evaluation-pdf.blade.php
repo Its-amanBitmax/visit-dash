@@ -110,7 +110,6 @@
             <div>Bitmax Admin System</div>
             <div class="footer-right">
                 <div>Generated on {{ date('Y-m-d H:i:s') }}</div>
-                <div>Generated on {{ date('Y-m-d H:i:s') }}</div>
             </div>
         </div>
     </div>
