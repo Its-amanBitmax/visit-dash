@@ -51,10 +51,9 @@
         .header {
             position: relative;
             z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
             border-bottom: 2px solid #dbeafe;
             background: linear-gradient(90deg, #eff6ff, #ffffff);
             padding: 12px 14px;
@@ -62,9 +61,10 @@
         }
 
         .brand {
-            display: flex;
-            align-items: center;
+            display: table-cell;
+            vertical-align: top;
             gap: 12px;
+            width: 50%;
         }
 
         .brand img {
@@ -106,8 +106,11 @@
             text-align: right;
             font-size: 12px;
             color: var(--muted);
-            display: grid;
-            gap: 3px;
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
+            position: relative;
+            top: -4px;
         }
 
         .section {
@@ -171,13 +174,27 @@
             position: relative;
             z-index: 1;
             margin-top: 12px;
-            display: inline-flex;
-            justify-content: space-between;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
+            width: 100%;
             font-size: 11px;
             color: var(--muted);
             border-top: 1px solid var(--line);
             padding-top: 8px;
             gap: 24px;
+            text-align: left;
+        }
+        .footer > div {
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
+        }
+        .footer > div:first-child {
+            text-align: left;
+        }
+        .footer > div:last-child {
+            text-align: right;
         }
 
 
