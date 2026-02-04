@@ -9,7 +9,7 @@
             <div style="font-size:18px;font-weight:700;">Agent Average Scores</div>
             <div style="color:#606776;">Top 10 agents by average score.</div>
         </div>
-        <button class="btn btn-secondary" id="downloadChartPdf">Download Chart PDF</button>
+        
     </div>
 
     <div class="page-card" style="display:grid;gap:18px;">
@@ -61,7 +61,6 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script>
     const labels = @json($labels);
     const scores = @json($scores);
@@ -154,20 +153,5 @@
     });
     setActive('pie');
 
-    document.getElementById('downloadChartPdf').addEventListener('click', async () => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'pt', 'a4');
-        pdf.setFontSize(16);
-        pdf.text('Agent Average Scores', 40, 40);
-        const imgData = pieCtx.toDataURL('image/png', 1.0);
-        pdf.addImage(imgData, 'PNG', 40, 70, 520, 300);
-        pdf.addPage();
-        const barData = barCtx.toDataURL('image/png', 1.0);
-        pdf.addImage(barData, 'PNG', 40, 70, 520, 300);
-        pdf.addPage();
-        const lineData = lineCtx.toDataURL('image/png', 1.0);
-        pdf.addImage(lineData, 'PNG', 40, 70, 520, 300);
-        pdf.save('agent-score-chart.pdf');
-    });
 </script>
 @endpush
