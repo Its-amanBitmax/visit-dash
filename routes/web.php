@@ -4,6 +4,8 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\AgentChatEvaluationController;
 use App\Http\Controllers\CenterVisitEvaluationController;
+use App\Http\Controllers\QaEvaluationReportController;
+use App\Http\Controllers\TlEvaluationReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AdminAuthController::class, 'showLoginForm']);
@@ -18,6 +20,18 @@ Route::get('center-visit-evaluations/{id}/pdf', [CenterVisitEvaluationController
     ->name('center-visit-evaluations.pdf');
 Route::get('center-visit-evaluations/pdf/all', [CenterVisitEvaluationController::class, 'downloadAllPdf'])
     ->name('center-visit-evaluations.pdf.all');
+
+Route::resource('qa-evaluation-reports', QaEvaluationReportController::class);
+Route::get('qa-evaluation-reports/{id}/pdf', [QaEvaluationReportController::class, 'downloadPdf'])
+    ->name('qa-evaluation-reports.pdf');
+Route::get('qa-evaluation-reports/pdf/all', [QaEvaluationReportController::class, 'downloadAllPdf'])
+    ->name('qa-evaluation-reports.pdf.all');
+
+Route::resource('tl-evaluation-reports', TlEvaluationReportController::class);
+Route::get('tl-evaluation-reports/{id}/pdf', [TlEvaluationReportController::class, 'downloadPdf'])
+    ->name('tl-evaluation-reports.pdf');
+Route::get('tl-evaluation-reports/pdf/all', [TlEvaluationReportController::class, 'downloadAllPdf'])
+    ->name('tl-evaluation-reports.pdf.all');
 
 Route::prefix('admin')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])

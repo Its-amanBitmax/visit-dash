@@ -23,6 +23,10 @@
 
         * { box-sizing: border-box; }
 
+        html, body {
+            height: 100%;
+        }
+
         body {
             margin: 0;
             font-family: "Urbanist", "Segoe UI", sans-serif;
@@ -33,6 +37,7 @@
                 linear-gradient(120deg, #f8fafc 0%, #edf2ff 48%, #f2f5ff 100%),
                 var(--bg);
             min-height: 100vh;
+            overflow: hidden;
         }
 
         .layout {
@@ -53,7 +58,16 @@
             gap: 20px;
             border-right: 1px solid rgba(255, 255, 255, 0.06);
             position: relative;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 100vh;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        aside::-webkit-scrollbar {
+            width: 0;
+            height: 0;
         }
 
         aside::after {
@@ -214,7 +228,10 @@
             gap: 20px;
             align-content: start;
             overflow-y: auto;
+            overflow-x: hidden;
             min-height: 0;
+            padding-bottom: 48px;
+            scroll-padding-bottom: 48px;
         }
 
         .stat-grid {
@@ -317,6 +334,7 @@
             overflow: auto;
             border-radius: 14px;
             border: 1px solid var(--line);
+            -webkit-overflow-scrolling: touch;
         }
 
         table.table {
@@ -444,9 +462,16 @@
             }
 
             aside {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                padding: 16px;
                 flex-direction: row;
                 align-items: center;
+                gap: 14px;
                 overflow-x: auto;
+                overflow-y: hidden;
+                height: auto;
             }
 
             .nav {
@@ -454,8 +479,100 @@
                 grid-auto-columns: max-content;
             }
 
+            .page-card,
+            .card {
+                min-width: 0;
+            }
+
+            .page-card div[style*="grid-template-columns:repeat(2"],
+            .page-card div[style*="grid-template-columns:repeat(3"] {
+                grid-template-columns: 1fr !important;
+            }
+
             .stat-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .layout {
+                height: auto;
+            }
+
+            .content {
+                min-height: 0;
+                height: auto;
+            }
+
+            header {
+                padding: 16px 18px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            header .title {
+                font-size: 18px;
+            }
+
+            .main {
+                padding: 18px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding-bottom: 40px;
+                scroll-padding-bottom: 40px;
+            }
+
+            .card,
+            .page-card {
+                padding: 18px;
+            }
+
+            .table-wrap {
+                border-radius: 12px;
+            }
+
+            table.table {
+                min-width: 640px;
+            }
+
+            .btn,
+            .btn-secondary,
+            .btn-danger,
+            .btn-toggle {
+                padding: 10px 12px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            aside {
+                padding: 14px 12px;
+            }
+
+            .brand {
+                font-size: 16px;
+            }
+
+            .brand .logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .nav a {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .aside-card {
+                min-width: 180px;
+            }
+
+            .main {
+                padding: 14px;
+            }
+
+            footer {
+                padding: 12px 16px;
+                font-size: 12px;
             }
         }
     </style>
@@ -470,10 +587,10 @@
         <aside>
             <div class="brand">
                 <div class="logo">
-                    <span>BX</span>
+                    <span>GP</span>
                 </div>
                 <div>
-                    Bitmax Admin
+                    Global Projects
                     <small>Control Center</small>
                 </div>
             </div>
@@ -482,8 +599,12 @@
                 <div class="section">Management</div>
                 <a class="{{ request()->is('agent-chat-evaluations*') ? 'active' : '' }}" href="{{ route('agent-chat-evaluations.index') }}">Agent Evaluation</a>
                 <a class="{{ request()->is('center-visit-evaluations*') ? 'active' : '' }}" href="{{ route('center-visit-evaluations.index') }}">Center Evaluation</a>
+                <a class="{{ request()->is('qa-evaluation-reports*') ? 'active' : '' }}" href="{{ route('qa-evaluation-reports.index') }}">QA Evaluation</a>
+                <a class="{{ request()->is('tl-evaluation-reports*') ? 'active' : '' }}" href="{{ route('tl-evaluation-reports.index') }}">TL Evaluation</a>
                 <a class="{{ request()->is('admin/chart-view') ? 'active' : '' }}" href="{{ route('admin.chart.view') }}">Chart View</a>
-                <a class="{{ request()->is('admin/manage-admins*') ? 'active' : '' }}" href="{{ route('admin.management.index') }}">Manage Admin</a>
+                @if (auth('admin')->check() && (int) auth('admin')->id() === 1)
+                    <a class="{{ request()->is('admin/manage-admins*') ? 'active' : '' }}" href="{{ route('admin.management.index') }}">Manage Admin</a>
+                @endif
                 <div class="section">System</div>
                 <a class="{{ request()->is('admin/settings') ? 'active' : '' }}" href="{{ url('/admin/settings') }}">Settings</a>
             </nav>

@@ -42,7 +42,7 @@
                 <tbody>
                     @forelse ($evaluations as $evaluation)
                         <tr>
-                            <td>{{ $evaluation->id }}</td>
+                            <td>{{ $loop->iteration + ($evaluations->currentPage() - 1) * $evaluations->perPage() }}</td>
                             <td>{{ $evaluation->center_name }}</td>
                             <td>{{ $evaluation->location }}</td>
                             <td>{{ $evaluation->visit_date }}</td>
