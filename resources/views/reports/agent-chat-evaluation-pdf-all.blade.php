@@ -81,11 +81,15 @@
             margin-top: 2px;
         }
 
+
+        .header-left { display: block; }
+
         .header .title {
             font-size: 20px;
             font-weight: 800;
             letter-spacing: 0.4px;
         }
+
 
         .header .subtitle {
             display: inline-block;
@@ -122,6 +126,7 @@
             display: table-cell;
             vertical-align: top;
             width: 50%;
+
         }
 
         .meta img {
@@ -254,7 +259,11 @@
             <div>
                 <span class="report-chip">Confidential</span>
                 <div class="title">Agent Chat Evaluation</div>
+<<<<<<<<< Temporary merge branch 1
+                <div class="subtitle">Internal Report</div>
+=========
                 <div class="subtitle">Evaluation Date: {{ $evaluation->column001 }}</div>
+>>>>>>>>> Temporary merge branch 2
             </div>
             <div class="meta">
                 @if ($logoData)
