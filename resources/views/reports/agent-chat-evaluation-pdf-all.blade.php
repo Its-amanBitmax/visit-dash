@@ -83,6 +83,8 @@
 
         .header-left { display: block; }
 
+        .header-left { display: block; }
+
         .report-chip {
             display: inline-flex;
             align-items: center;
@@ -158,9 +160,14 @@
         }
 
         .overall .score {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 18px;
+            font-weight: 800;
         }
 
         .pill {
@@ -227,8 +234,10 @@
                 <div class="subtitle">Internal Report</div>
             </div>
             <div class="meta">
-                <div>Report Summary</div>
-                <div>Evaluation Date: {{ $evaluation->column001 }}</div>
+                @if ($logoData)
+                    <img src="{{ $logoData }}" alt="Logo">
+                @endif
+               
             </div>
         </div>
 
@@ -272,9 +281,9 @@
             <div class="overall">
                 <div>
                     Overall Score
-                    <span class="pill">{{ $evaluation->percentage }}%</span>
+                    <!-- <span class="pill">{{ $evaluation->percentage }}%</span> -->
                 </div>
-                <div class="score">{{ $evaluation->overall_score }}</div>
+                <div class="score">{{ $evaluation->percentage }}%</div>
             </div>
         </div>
 
