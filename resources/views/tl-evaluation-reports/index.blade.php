@@ -9,7 +9,12 @@
             <div style="font-size:18px;font-weight:700;">All TL Reports</div>
             <div style="color:#606776;">Manage TL evaluation reports.</div>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <form method="GET" action="{{ route('tl-evaluation-reports.index') }}" data-live-search
+                  style="display:flex;gap:8px;align-items:center;">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search name / employee / project"
+                       style="padding:10px 12px;border-radius:12px;border:1px solid #e5e7eb;font-size:14px;">
+            </form>
             <a class="btn btn-secondary" href="{{ route('tl-evaluation-reports.pdf.all') }}">Download All PDF</a>
             <a class="btn" href="{{ route('tl-evaluation-reports.create') }}">Create New</a>
         </div>
@@ -68,3 +73,18 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        const form = document.querySelector('form[data-live-search]');
+        if (!form) return;
+        const input = form.querySelector('input[name="search"]');
+        let timer;
+        input.addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => form.submit(), 300);
+        });
+    })();
+</script>
+@endpush

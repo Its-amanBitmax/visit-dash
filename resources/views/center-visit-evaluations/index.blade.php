@@ -37,6 +37,7 @@
                         <th>Visit Date</th>
                         <th>Evaluator</th>
                         <th>Actions</th>
+                        <th>Proof</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,6 +57,13 @@
                                     @method('DELETE')
                                     <button class="btn btn-danger" type="submit" onclick="return confirm('Delete this evaluation?')">Delete</button>
                                 </form>
+                            </td>
+                            <td>
+                                @if (($evaluation->proofs_count ?? 0) > 0)
+                                    <a class="btn btn-secondary" href="{{ route('center-visit-evaluations.proof', $evaluation->id) }}">Update & View</a>
+                                @else
+                                    <a class="btn btn-secondary" href="{{ route('center-visit-evaluations.proof', $evaluation->id) }}">Collect</a>
+                                @endif
                             </td>
                         </tr>
                     @empty

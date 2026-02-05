@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CenterVisitProof;
 
 class CenterVisitEvaluation extends Model
 {
@@ -23,4 +24,9 @@ class CenterVisitEvaluation extends Model
         'evaluator_name',
         'evaluator_remarks',
     ];
+
+    public function proofs()
+    {
+        return $this->hasMany(CenterVisitProof::class);
+    }
 }

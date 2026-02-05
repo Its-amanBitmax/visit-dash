@@ -9,7 +9,19 @@ class QaEvaluationReportController extends Controller
 {
     public function index()
     {
-        $reports = QaEvaluationReport::latest()->paginate(10);
+        $search = trim((string) request('search'));
+        $reports = QaEvaluationReport::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('employee_id', 'like', '%' . $search . '%')
+                        ->orWhere('process_project', 'like', '%' . $search . '%')
+                        ->orWhere('client_name', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('qa-evaluation-reports.index', compact('reports'));
     }

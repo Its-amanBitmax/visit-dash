@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\CenterVisitEvaluation;
+use App\Models\CenterVisitProof;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CenterVisitEvaluationController extends Controller
 {
@@ -19,6 +21,7 @@ class CenterVisitEvaluationController extends Controller
                         ->orWhere('evaluator_name', 'like', '%' . $search . '%');
                 });
             })
+            ->withCount('proofs')
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -89,6 +92,44 @@ class CenterVisitEvaluationController extends Controller
         return redirect()
             ->route('center-visit-evaluations.index')
             ->with('status', 'Center visit evaluation deleted successfully.');
+    }
+
+    public function proof($id)
+    {
+        $evaluation = CenterVisitEvaluation::findOrFail($id);
+        $proofs = $evaluation->proofs()->latest()->get();
+
+        return view('center-visit-evaluations.proof', compact('evaluation', 'proofs'));
+    }
+
+    public function storeProof(Request $request, $id)
+    {
+        $evaluation = CenterVisitEvaluation::findOrFail($id);
+
+        $validated = $request->validate([
+            'visit_images' => 'required|array|min:1',
+            'visit_images.*' => 'image|max:5120',
+            'visit_latitude' => 'nullable|numeric',
+            'visit_longitude' => 'nullable|numeric',
+            'visit_address' => 'nullable|string',
+        ]);
+
+        $paths = [];
+        foreach ($request->file('visit_images', []) as $image) {
+            $paths[] = $image->store('visit-proofs', 'public');
+        }
+
+        CenterVisitProof::create([
+            'center_visit_evaluation_id' => $evaluation->id,
+            'visit_images' => $paths,
+            'visit_latitude' => $validated['visit_latitude'] ?? null,
+            'visit_longitude' => $validated['visit_longitude'] ?? null,
+            'visit_address' => $validated['visit_address'] ?? null,
+        ]);
+
+        return redirect()
+            ->route('center-visit-evaluations.index')
+            ->with('status', 'Visit proof uploaded successfully.');
     }
 
     public function downloadAllPdf()

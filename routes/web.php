@@ -20,6 +20,10 @@ Route::get('center-visit-evaluations/{id}/pdf', [CenterVisitEvaluationController
     ->name('center-visit-evaluations.pdf');
 Route::get('center-visit-evaluations/pdf/all', [CenterVisitEvaluationController::class, 'downloadAllPdf'])
     ->name('center-visit-evaluations.pdf.all');
+Route::get('center-visit-evaluations/{id}/proof', [CenterVisitEvaluationController::class, 'proof'])
+    ->name('center-visit-evaluations.proof');
+Route::post('center-visit-evaluations/{id}/proof', [CenterVisitEvaluationController::class, 'storeProof'])
+    ->name('center-visit-evaluations.proof.store');
 
 Route::resource('qa-evaluation-reports', QaEvaluationReportController::class);
 Route::get('qa-evaluation-reports/{id}/pdf', [QaEvaluationReportController::class, 'downloadPdf'])
