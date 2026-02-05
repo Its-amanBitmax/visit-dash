@@ -47,10 +47,39 @@ class AdminAuthController extends Controller
             ->limit(10)
             ->get();
 
-        $labels = $agentAverages->pluck('agent_name');
-        $scores = $agentAverages->pluck('avg_score')->map(fn ($v) => round((float) $v, 2));
+        $qaAverages = \App\Models\QaEvaluationReport::query()
+            ->selectRaw('name, AVG(overall_rating) as avg_score')
+            ->groupBy('name')
+            ->orderByDesc('avg_score')
+            ->limit(10)
+            ->get();
 
-        return view('admin.chart-view', compact('labels', 'scores'));
+        $tlAverages = \App\Models\TlEvaluationReport::query()
+            ->selectRaw('name, AVG(overall_rating) as avg_score')
+            ->groupBy('name')
+            ->orderByDesc('avg_score')
+            ->limit(10)
+            ->get();
+
+        $datasets = [
+            'agent' => [
+                'labels' => $agentAverages->pluck('agent_name'),
+                'scores' => $agentAverages->pluck('avg_score')->map(fn ($v) => round((float) $v, 2)),
+                'label' => 'Agent Avg Score',
+            ],
+            'qa' => [
+                'labels' => $qaAverages->pluck('name'),
+                'scores' => $qaAverages->pluck('avg_score')->map(fn ($v) => round((float) $v, 2)),
+                'label' => 'QA Avg Rating',
+            ],
+            'tl' => [
+                'labels' => $tlAverages->pluck('name'),
+                'scores' => $tlAverages->pluck('avg_score')->map(fn ($v) => round((float) $v, 2)),
+                'label' => 'TL Avg Rating',
+            ],
+        ];
+
+        return view('admin.chart-view', compact('datasets'));
     }
 
     public function settings()

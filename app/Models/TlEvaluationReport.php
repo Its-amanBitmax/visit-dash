@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class TlEvaluationReport extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'employee_id',
+        'process_project',
+        'team_strength',
+        'evaluation_from',
+        'evaluation_to',
+        'team_handling_rating',
+        'team_handling_remarks',
+        'productivity_achievement_rating',
+        'productivity_achievement_remarks',
+        'quality_improvement_rating',
+        'quality_improvement_remarks',
+        'attendance_management_rating',
+        'attendance_management_remarks',
+        'training_coaching_rating',
+        'training_coaching_remarks',
+        'escalation_handling_rating',
+        'escalation_handling_remarks',
+        'client_communication_rating',
+        'client_communication_remarks',
+        'reporting_documentation_rating',
+        'reporting_documentation_remarks',
+        'kpi_aht_target',
+        'kpi_aht_achieved',
+        'kpi_aht_status',
+        'kpi_qa_target',
+        'kpi_qa_achieved',
+        'kpi_qa_status',
+        'kpi_csat_target',
+        'kpi_csat_achieved',
+        'kpi_csat_status',
+        'kpi_attendance_target',
+        'kpi_attendance_achieved',
+        'kpi_attendance_status',
+        'kpi_productivity_target',
+        'kpi_productivity_achieved',
+        'kpi_productivity_status',
+        'team_discipline_maintained',
+        'shift_adherence',
+        'roster_planning',
+        'attrition_control',
+        'regular_coaching_sessions',
+        'training_plan_prepared',
+        'performance_improvement_tracking',
+        'low_performer_management',
+        'client_communication',
+        'internal_reporting',
+        'escalation_closure_speed',
+        'coordination_with_hr',
+        'strengths1',
+        'strengths2',
+        'strengths3',
+        'improvement1',
+        'improvement2',
+        'improvement3',
+        'overall_rating',
+        'final_remarks',
+        'evaluator_name',
+        'evaluation_date',
+        'promotion_recommended',
+        'training_required',
+        'warning_required',
+        'pip_recommended',
+        'salary_revision',
+    ];
+}

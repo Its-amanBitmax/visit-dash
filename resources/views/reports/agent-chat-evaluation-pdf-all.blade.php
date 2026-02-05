@@ -81,23 +81,7 @@
             margin-top: 2px;
         }
 
-        .header .title {
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 0.4px;
-        }
-
-        .header .subtitle {
-            display: inline-block;
-            margin-top: 6px;
-            padding: 3px 8px;
-            border-radius: 999px;
-            background: #e0e7ff;
-            color: #1e40af;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
+        .header-left { display: block; }
 
         .header-left { display: block; }
 
@@ -122,13 +106,6 @@
             display: table-cell;
             vertical-align: top;
             width: 50%;
-        }
-
-        .meta img {
-            height: 60px;
-            width: auto;
-            margin-bottom: 4px;
-            opacity: 0.9;
         }
 
         .section {
@@ -254,7 +231,7 @@
             <div>
                 <span class="report-chip">Confidential</span>
                 <div class="title">Agent Chat Evaluation</div>
-                <div class="subtitle">Evaluation Date: {{ $evaluation->column001 }}</div>
+                <div class="subtitle">Internal Report</div>
             </div>
             <div class="meta">
                 @if ($logoData)

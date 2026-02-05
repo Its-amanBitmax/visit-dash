@@ -6,17 +6,24 @@
 @section('content')
     <div class="page-card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div>
-            <div style="font-size:18px;font-weight:700;">Agent Average Scores</div>
-            <div style="color:#606776;">Top 10 agents by average score.</div>
+            <div style="font-size:18px;font-weight:700;">Evaluation Charts</div>
+            <div style="color:#606776;">Switch between Agent, QA, and TL averages.</div>
         </div>
         
     </div>
 
     <div class="page-card" style="display:grid;gap:18px;">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-toggle chart-toggle" data-target="pie">Pie</button>
-            <button class="btn btn-toggle chart-toggle" data-target="bar">Bar</button>
-            <button class="btn btn-toggle chart-toggle" data-target="line">Line</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-toggle chart-toggle" data-target="pie">Pie</button>
+                <button class="btn btn-toggle chart-toggle" data-target="bar">Bar</button>
+                <button class="btn btn-toggle chart-toggle" data-target="line">Line</button>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-toggle chart-scope" data-scope="agent">Agent</button>
+                <button class="btn btn-toggle chart-scope" data-scope="qa">QA</button>
+                <button class="btn btn-toggle chart-scope" data-scope="tl">TL</button>
+            </div>
         </div>
         <div data-chart="pie">
             <div style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Pie Chart</div>
@@ -38,21 +45,14 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Agent</th>
-                        <th>Average Score</th>
+                        <th>Name</th>
+                        <th>Average</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($labels as $i => $label)
-                        <tr>
-                            <td>{{ $label }}</td>
-                            <td>{{ $scores[$i] }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="2" style="text-align:center;color:#606776;">No data found.</td>
-                        </tr>
-                    @endforelse
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:#606776;">No data found.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -62,8 +62,30 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-    const labels = @json($labels);
-    const scores = @json($scores);
+    const datasets = @json($datasets);
+    let activeScope = 'agent';
+    const getData = (scope) => ({
+        labels: datasets[scope]?.labels || [],
+        scores: datasets[scope]?.scores || [],
+        label: datasets[scope]?.label || 'Average'
+    });
+    const dataTableBody = document.querySelector('.table tbody');
+
+    const renderTable = (labels, scores) => {
+        dataTableBody.innerHTML = '';
+        if (!labels.length) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="2" style="text-align:center;color:#606776;">No data found.</td>';
+            dataTableBody.appendChild(row);
+            return;
+        }
+        labels.forEach((label, idx) => {
+            const row = document.createElement('tr');
+            const score = scores[idx] ?? '';
+            row.innerHTML = `<td>${label}</td><td>${score}</td>`;
+            dataTableBody.appendChild(row);
+        });
+    };
 
     const pieCtx = document.getElementById('agentScoreChartPie');
     const barCtx = document.getElementById('agentScoreChartBar');
@@ -77,9 +99,9 @@
     const pieChart = new Chart(pieCtx, {
         type: 'pie',
         data: {
-            labels,
+            labels: getData(activeScope).labels,
             datasets: [{
-                data: scores,
+                data: getData(activeScope).scores,
                 backgroundColor: colors,
                 borderWidth: 1,
                 borderColor: '#ffffff'
@@ -95,10 +117,10 @@
     const barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
-            labels,
+            labels: getData(activeScope).labels,
             datasets: [{
-                label: 'Average Score',
-                data: scores,
+                label: getData(activeScope).label,
+                data: getData(activeScope).scores,
                 backgroundColor: colors,
                 borderColor: '#1d4ed8',
                 borderWidth: 1
@@ -117,10 +139,10 @@
     const lineChart = new Chart(lineCtx, {
         type: 'line',
         data: {
-            labels,
+            labels: getData(activeScope).labels,
             datasets: [{
-                label: 'Average Score',
-                data: scores,
+                label: getData(activeScope).label,
+                data: getData(activeScope).scores,
                 borderColor: '#2563eb',
                 backgroundColor: 'rgba(37, 99, 235, 0.15)',
                 fill: true,
@@ -152,6 +174,35 @@
         btn.addEventListener('click', () => setActive(btn.dataset.target));
     });
     setActive('pie');
+
+    const scopeButtons = document.querySelectorAll('.chart-scope');
+    const setScope = (scope) => {
+        activeScope = scope;
+        const data = getData(scope);
+
+        pieChart.data.labels = data.labels;
+        pieChart.data.datasets[0].data = data.scores;
+        pieChart.update();
+
+        barChart.data.labels = data.labels;
+        barChart.data.datasets[0].data = data.scores;
+        barChart.data.datasets[0].label = data.label;
+        barChart.update();
+
+        lineChart.data.labels = data.labels;
+        lineChart.data.datasets[0].data = data.scores;
+        lineChart.data.datasets[0].label = data.label;
+        lineChart.update();
+
+        scopeButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.scope === scope);
+        });
+        renderTable(data.labels, data.scores);
+    };
+    scopeButtons.forEach(btn => {
+        btn.addEventListener('click', () => setScope(btn.dataset.scope));
+    });
+    setScope('agent');
 
 </script>
 @endpush

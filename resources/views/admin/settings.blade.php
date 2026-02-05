@@ -4,11 +4,56 @@
 @section('header', 'Account Settings')
 
 @section('content')
+    <style>
+        @media (max-width: 860px) {
+            .settings-grid-2 {
+                grid-template-columns: 1fr !important;
+            }
+            .settings-actions {
+                justify-content: flex-start !important;
+            }
+        }
+        .settings-grid-2 > div {
+            min-width: 0;
+        }
+        .settings-form {
+            width: 100%;
+        }
+    </style>
+
     <div class="card" style="padding:0;overflow:hidden;">
-        <div style="padding:22px 24px;border-bottom:1px solid #e5e7eb;background:linear-gradient(120deg,#eef2ff,#f8fafc);">
-            <div style="font-size:18px;font-weight:700;">Basic Details</div>
-            <div style="color:#606776;margin-top:4px;">Update your name, email, and password. Username cannot be changed.</div>
+       <div style="padding:22px 24px;
+            border-bottom:1px solid #e5e7eb;
+            background:linear-gradient(120deg,#eef2ff,#f8fafc);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;">
+
+    <!-- Left Content -->
+    <div>
+        <div style="font-size:18px;font-weight:700;">Basic Details</div>
+        <div style="color:#606776;margin-top:4px;">
+            Update your name, email, and password. Username cannot be changed.
         </div>
+    </div>
+
+    <!-- Right Button -->
+    <div>
+        <button type="submit"
+                style="border:none;
+                       background:#2563eb;
+                       color:#fff;
+                       padding:12px 16px;
+                       border-radius:12px;
+                       font-weight:600;
+                       cursor:pointer;">
+            Save Changes
+        </button>
+    </div>
+
+</div>
+
 
         <div style="padding:22px 24px;display:grid;gap:16px;">
             @if (session('status'))
@@ -27,10 +72,10 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('admin.settings.update') }}" style="display:grid;gap:16px;">
+            <form method="POST" action="{{ route('admin.settings.update') }}" class="settings-form" style="display:grid;gap:16px;">
                 @csrf
 
-                <div style="display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr));">
+                <div class="settings-grid-2" style="display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr));">
                     <div>
                         <label style="display:block;font-size:12px;letter-spacing:0.8px;text-transform:uppercase;color:#606776;margin-bottom:6px;">Username</label>
                         <input type="text" value="{{ auth('admin')->user()->username }}" readonly
@@ -48,7 +93,7 @@
                     </div>
                 </div>
 
-                <div style="display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr));">
+                <div class="settings-grid-2" style="display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr));">
                     <div>
                         <label style="display:block;font-size:12px;letter-spacing:0.8px;text-transform:uppercase;color:#606776;margin-bottom:6px;">New Password</label>
                         <input name="password" type="password" placeholder="Leave blank to keep current password"
@@ -61,12 +106,7 @@
                     </div>
                 </div>
 
-                <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
-                    <button type="submit"
-                            style="border:none;background:#2563eb;color:#fff;padding:12px 16px;border-radius:12px;font-weight:600;cursor:pointer;">
-                        Save Changes
-                    </button>
-                </div>
+             
             </form>
         </div>
     </div>
