@@ -9,20 +9,41 @@
             .settings-grid-2 {
                 grid-template-columns: 1fr !important;
             }
-            .settings-actions {
-                justify-content: flex-start !important;
+            .settings-header {
+                flex-wrap: wrap;
+                align-items: flex-start !important;
             }
+            .settings-save {
+                width: 100%;
+            }
+        }
+        .settings-card {
+            overflow: visible !important;
+            height: auto;
         }
         .settings-grid-2 > div {
             min-width: 0;
         }
         .settings-form {
             width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+        .settings-header > div {
+            min-width: 0;
+        }
+        .settings-save {
+            width: auto;
+            min-width: 160px;
+        }
+        .settings-form input {
+            height: 48px;
+            padding: 14px 16px !important;
         }
     </style>
 
-    <div class="card" style="padding:0;overflow:hidden;">
-       <div style="padding:22px 24px;
+    <div class="card settings-card" style="padding:0;overflow:hidden;">
+       <div class="settings-header" style="padding:22px 24px;
             border-bottom:1px solid #e5e7eb;
             background:linear-gradient(120deg,#eef2ff,#f8fafc);
             display:flex;
@@ -40,7 +61,7 @@
 
     <!-- Right Button -->
     <div>
-        <button type="submit"
+        <button type="submit" class="settings-save"
                 style="border:none;
                        background:#2563eb;
                        color:#fff;

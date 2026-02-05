@@ -4,44 +4,68 @@
 @section('header', 'Agent Score Chart')
 
 @section('content')
+    @php
+        $logoPath = public_path('yello.png');
+        $logoData = '';
+        if (is_file($logoPath)) {
+            $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+    @endphp
     <div class="page-card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div>
             <div style="font-size:18px;font-weight:700;">Evaluation Charts</div>
             <div style="color:#606776;">Switch between Agent, QA, and TL averages.</div>
         </div>
+        <div>
+            <button id="downloadChartPdf" class="btn">Download PDF</button>
+        </div>
         
     </div>
 
-    <div class="page-card" style="display:grid;gap:18px;">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;">
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <button class="btn btn-toggle chart-toggle" data-target="pie">Pie</button>
-                <button class="btn btn-toggle chart-toggle" data-target="bar">Bar</button>
-                <button class="btn btn-toggle chart-toggle" data-target="line">Line</button>
+    <div id="chartPdfArea">
+        <div id="chartPdfHeader" class="page-card" style="display:none;table-layout:fixed;width:100%;border-top:0;border-bottom:2px solid #dbeafe;background:linear-gradient(90deg,#eff6ff,#ffffff);padding:12px 14px;border-radius:0;">
+            <div style="display:table-cell;vertical-align:top;width:50%;">
+                <div style="display:inline-flex;align-items:center;gap:8px;padding:3px 8px;border-radius:999px;background:#e0e7ff;color:#1e40af;font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Confidential</div>
+                <div id="chartHeaderTitle" style="font-size:20px;font-weight:800;letter-spacing:0.4px;margin-top:6px;">Agent Score Chart</div>
+                <div style="display:inline-block;margin-top:6px;padding:3px 8px;border-radius:999px;background:#e0e7ff;color:#1e40af;font-size:10px;font-weight:700;letter-spacing:0.3px;">Generated on {{ date('Y-m-d H:i:s') }}</div>
             </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <button class="btn btn-toggle chart-scope" data-scope="agent">Agent</button>
-                <button class="btn btn-toggle chart-scope" data-scope="qa">QA</button>
-                <button class="btn btn-toggle chart-scope" data-scope="tl">TL</button>
-            </div>
+            <div style="display:table-cell;vertical-align:top;width:50%;text-align:right;">
+                @if ($logoData)
+                    <img src="{{ $logoData }}" alt="Logo" style="height:60px;width:auto;margin-bottom:4px;opacity:0.9;">
+                @endif
+              </div>
         </div>
-        <div data-chart="pie">
-            <div style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Pie Chart</div>
-            <canvas id="agentScoreChartPie" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
-        </div>
-        <div data-chart="bar" style="display:none;">
-            <div style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Bar Chart</div>
-            <canvas id="agentScoreChartBar" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
-        </div>
-        <div data-chart="line" style="display:none;">
-            <div style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Line Chart</div>
-            <canvas id="agentScoreChartLine" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
-        </div>
-    </div>
 
-    <div class="page-card">
-        <div style="font-size:14px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:10px;">Data</div>
-        <div class="table-wrap">
+        <div class="page-card" style="display:grid;gap:18px;">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;">
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-toggle chart-toggle" data-target="pie">Pie</button>
+                    <button class="btn btn-toggle chart-toggle" data-target="bar">Bar</button>
+                    <button class="btn btn-toggle chart-toggle" data-target="line">Line</button>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-toggle chart-scope" data-scope="agent">Agent</button>
+                    <button class="btn btn-toggle chart-scope" data-scope="qa">QA</button>
+                    <button class="btn btn-toggle chart-scope" data-scope="tl">TL</button>
+                </div>
+            </div>
+            <div data-chart="pie">
+                <div class="chart-title" style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Pie Chart</div>
+                <canvas id="agentScoreChartPie" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
+            </div>
+            <div data-chart="bar" style="display:none;">
+                <div class="chart-title" style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Bar Chart</div>
+                <canvas id="agentScoreChartBar" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
+            </div>
+            <div data-chart="line" style="display:none;">
+                <div class="chart-title" style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Line Chart</div>
+                <canvas id="agentScoreChartLine" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
+            </div>
+        </div>
+
+        <div class="page-card" style="margin-top: 20px;">
+            <div style="font-size:14px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:10px; ">Data</div>
+            <div class="table-wrap">
             <table class="table">
                 <thead>
                     <tr>
@@ -54,13 +78,26 @@
                         <td colspan="2" style="text-align:center;color:#606776;">No data found.</td>
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td style="font-weight:700;">Overall Average</td>
+                        <td style="font-weight:700;" id="chartOverallAverage">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:700;">Total Count</td>
+                        <td style="font-weight:700;" id="chartOverallCount">0</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
+    </div>
     </div>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script>
     const datasets = @json($datasets);
     let activeScope = 'agent';
@@ -72,7 +109,19 @@
     const dataTableBody = document.querySelector('.table tbody');
 
     const renderTable = (labels, scores) => {
+        const totalCount = labels.length;
+        const overallAverage = totalCount
+            ? (scores.reduce((sum, val) => sum + (Number(val) || 0), 0) / totalCount)
+            : 0;
         dataTableBody.innerHTML = '';
+        const overallAvgCell = document.getElementById('chartOverallAverage');
+        const overallCountCell = document.getElementById('chartOverallCount');
+        if (overallAvgCell) {
+            overallAvgCell.textContent = totalCount ? overallAverage.toFixed(2) : '-';
+        }
+        if (overallCountCell) {
+            overallCountCell.textContent = totalCount;
+        }
         if (!labels.length) {
             const row = document.createElement('tr');
             row.innerHTML = '<td colspan="2" style="text-align:center;color:#606776;">No data found.</td>';
@@ -197,12 +246,104 @@
         scopeButtons.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.scope === scope);
         });
+        const scopeLabel = document.getElementById('chartScopeLabel');
+        if (scopeLabel) {
+            scopeLabel.textContent = scope.toUpperCase();
+        }
+        const headerTitle = document.getElementById('chartHeaderTitle');
+        if (headerTitle) {
+            const titleMap = { agent: 'Agent Score Chart', qa: 'QA Score Chart', tl: 'TL Score Chart' };
+            headerTitle.textContent = titleMap[scope] || 'Score Chart';
+        }
+        const scopeCount = document.getElementById('chartScopeCount');
+        if (scopeCount) {
+            scopeCount.textContent = data.labels.length;
+        }
         renderTable(data.labels, data.scores);
     };
     scopeButtons.forEach(btn => {
         btn.addEventListener('click', () => setScope(btn.dataset.scope));
     });
     setScope('agent');
+
+    const downloadButton = document.getElementById('downloadChartPdf');
+    downloadButton?.addEventListener('click', async () => {
+        const area = document.getElementById('chartPdfArea');
+        if (!area) return;
+
+        const header = document.getElementById('chartPdfHeader');
+        if (header) {
+            header.style.display = 'table';
+        }
+
+        const allToggleButtons = area.querySelectorAll('.chart-toggle');
+        const allScopeButtons = area.querySelectorAll('.chart-scope');
+        const previousButtonDisplay = [];
+        allToggleButtons.forEach((btn, idx) => {
+            previousButtonDisplay[idx] = btn.style.display;
+            btn.style.display = 'none';
+        });
+        allScopeButtons.forEach((btn, idx) => {
+            previousButtonDisplay[idx + allToggleButtons.length] = btn.style.display;
+            btn.style.display = 'none';
+        });
+
+        const roundedNodes = area.querySelectorAll('.page-card, .table-wrap, .table');
+        const previousRadius = [];
+        roundedNodes.forEach((node, idx) => {
+            previousRadius[idx] = node.style.borderRadius;
+            node.style.borderRadius = '0';
+        });
+
+        const chartTitles = area.querySelectorAll('.chart-title');
+        const previousTitleDisplay = [];
+        chartTitles.forEach((node, idx) => {
+            previousTitleDisplay[idx] = node.style.display;
+            node.style.display = 'none';
+        });
+
+        const canvas = await html2canvas(area, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        chartTitles.forEach((node, idx) => {
+            node.style.display = previousTitleDisplay[idx] || '';
+        });
+        roundedNodes.forEach((node, idx) => {
+            node.style.borderRadius = previousRadius[idx] || '';
+        });
+        allToggleButtons.forEach((btn, idx) => {
+            btn.style.display = previousButtonDisplay[idx] || '';
+        });
+        allScopeButtons.forEach((btn, idx) => {
+            btn.style.display = previousButtonDisplay[idx + allToggleButtons.length] || '';
+        });
+        if (header) {
+            header.style.display = 'none';
+        }
+
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pageWidth;
+        const imgHeight = canvas.height * (pageWidth / canvas.width);
+
+        let yOffset = 0;
+        const pageContentHeight = pageHeight - 40;
+        while (yOffset < imgHeight) {
+            if (yOffset > 0) {
+                pdf.addPage();
+            }
+            pdf.addImage(imgData, 'PNG', 0, 20 - yOffset, imgWidth, imgHeight);
+            yOffset += pageContentHeight;
+        }
+
+        pdf.save(`chart-report-${activeScope}.pdf`);
+    });
 
 </script>
 @endpush
