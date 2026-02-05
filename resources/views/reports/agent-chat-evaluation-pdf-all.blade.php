@@ -81,6 +81,24 @@
             margin-top: 2px;
         }
 
+        .header .title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+        }
+
+        .header .subtitle {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: #e0e7ff;
+            color: #1e40af;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
         .header-left { display: block; }
 
         .report-chip {
@@ -104,6 +122,13 @@
             display: table-cell;
             vertical-align: top;
             width: 50%;
+        }
+
+        .meta img {
+            height: 60px;
+            width: auto;
+            margin-bottom: 4px;
+            opacity: 0.9;
         }
 
         .section {
@@ -158,9 +183,14 @@
         }
 
         .overall .score {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 18px;
+            font-weight: 800;
         }
 
         .pill {
@@ -224,11 +254,13 @@
             <div>
                 <span class="report-chip">Confidential</span>
                 <div class="title">Agent Chat Evaluation</div>
-                <div class="subtitle">Internal Report</div>
+                <div class="subtitle">Evaluation Date: {{ $evaluation->column001 }}</div>
             </div>
             <div class="meta">
-                <div>Report Summary</div>
-                <div>Evaluation Date: {{ $evaluation->column001 }}</div>
+                @if ($logoData)
+                    <img src="{{ $logoData }}" alt="Logo">
+                @endif
+               
             </div>
         </div>
 
@@ -272,9 +304,9 @@
             <div class="overall">
                 <div>
                     Overall Score
-                    <span class="pill">{{ $evaluation->percentage }}%</span>
+                    <!-- <span class="pill">{{ $evaluation->percentage }}%</span> -->
                 </div>
-                <div class="score">{{ $evaluation->overall_score }}</div>
+                <div class="score">{{ $evaluation->percentage }}%</div>
             </div>
         </div>
 
