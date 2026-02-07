@@ -4,6 +4,139 @@
 @section('header', 'Agent Score Chart')
 
 @section('content')
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .layout,
+        .content {
+            height: 100vh;
+        }
+
+        .main {
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-controls__group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            max-height: 360px;
+        }
+
+        .chart-panel {
+            min-height: 360px;
+        }
+
+        .chart-panel canvas {
+            height: 360px;
+        }
+
+        .chart-table .table {
+            min-width: 0;
+        }
+
+        .page-card {
+            min-width: 0;
+        }
+
+        .chart-panel {
+            height: clamp(240px, 40vh, 360px);
+            overflow: hidden;
+        }
+
+        .chart-panel canvas {
+            height: 100%;
+            display: block;
+        }
+
+        .chart-canvas {
+            max-height: none;
+        }
+
+        .chart-controls__group .btn {
+            flex: 0 1 auto;
+        }
+
+        @media (max-width: 1200px) {
+            .chart-controls__group .btn {
+                flex: 1 1 120px;
+            }
+        }
+
+        @media (max-width: 980px) {
+            .chart-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .chart-controls__group {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chart-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .chart-header .btn {
+                width: 100%;
+            }
+
+            .chart-controls__group .btn {
+                flex: 1 1 140px;
+                justify-content: center;
+            }
+
+            .chart-panel {
+                height: clamp(220px, 38vh, 320px);
+            }
+        }
+
+        @media (max-width: 520px) {
+            .chart-controls__group .btn {
+                width: 100%;
+            }
+
+            .chart-panel {
+                height: clamp(200px, 34vh, 280px);
+            }
+
+            .chart-table .table th,
+            .chart-table .table td {
+                font-size: 12px;
+            }
+        }
+    </style>
     @php
         $logoPath = public_path('yello.png');
         $logoData = '';
@@ -11,7 +144,7 @@
             $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
         }
     @endphp
-    <div class="page-card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div class="page-card chart-header">
         <div>
             <div style="font-size:18px;font-weight:700;">Evaluation Charts</div>
             <div style="color:#606776;">Switch between Agent, QA, and TL averages.</div>
@@ -37,33 +170,33 @@
         </div>
 
         <div class="page-card" style="display:grid;gap:18px;">
-            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;">
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="chart-controls">
+                <div class="chart-controls__group">
                     <button class="btn btn-toggle chart-toggle" data-target="pie">Pie</button>
                     <button class="btn btn-toggle chart-toggle" data-target="bar">Bar</button>
                     <button class="btn btn-toggle chart-toggle" data-target="line">Line</button>
                 </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <div class="chart-controls__group">
                     <button class="btn btn-toggle chart-scope" data-scope="agent">Agent</button>
                     <button class="btn btn-toggle chart-scope" data-scope="qa">QA</button>
                     <button class="btn btn-toggle chart-scope" data-scope="tl">TL</button>
                 </div>
             </div>
-            <div data-chart="pie">
+            <div data-chart="pie" class="chart-panel">
                 <div class="chart-title" style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Pie Chart</div>
-                <canvas id="agentScoreChartPie" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
+                <canvas id="agentScoreChartPie" width="900" height="360" class="chart-canvas"></canvas>
             </div>
-            <div data-chart="bar" style="display:none;">
+            <div data-chart="bar" class="chart-panel" style="display:none;">
                 <div class="chart-title" style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Bar Chart</div>
-                <canvas id="agentScoreChartBar" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
+                <canvas id="agentScoreChartBar" width="900" height="360" class="chart-canvas"></canvas>
             </div>
-            <div data-chart="line" style="display:none;">
+            <div data-chart="line" class="chart-panel" style="display:none;">
                 <div class="chart-title" style="font-size:13px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:8px;">Line Chart</div>
-                <canvas id="agentScoreChartLine" width="900" height="360" style="width:100%;max-height:360px;"></canvas>
+                <canvas id="agentScoreChartLine" width="900" height="360" class="chart-canvas"></canvas>
             </div>
         </div>
 
-        <div class="page-card" style="margin-top: 20px;">
+        <div class="page-card chart-table" style="margin-top: 20px;">
             <div style="font-size:14px;text-transform:uppercase;letter-spacing:0.8px;color:#606776;margin-bottom:10px; ">Data</div>
             <div class="table-wrap">
             <table class="table">
@@ -145,6 +278,8 @@
         '#7dd3fc', '#0ea5e9', '#38bdf8', '#0284c7', '#0ea5e9'
     ];
 
+    const getLegendPosition = () => (window.innerWidth <= 768 ? 'bottom' : 'right');
+
     const pieChart = new Chart(pieCtx, {
         type: 'pie',
         data: {
@@ -157,8 +292,14 @@
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            radius: '82%',
+            layout: {
+                padding: 8
+            },
             plugins: {
-                legend: { position: 'right' }
+                legend: { position: getLegendPosition() }
             }
         }
     });
@@ -176,6 +317,8 @@
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: { beginAtZero: true, max: 100 }
             },
@@ -200,6 +343,8 @@
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: { beginAtZero: true, max: 100 }
             },
@@ -265,6 +410,11 @@
         btn.addEventListener('click', () => setScope(btn.dataset.scope));
     });
     setScope('agent');
+
+    window.addEventListener('resize', () => {
+        pieChart.options.plugins.legend.position = getLegendPosition();
+        pieChart.update();
+    });
 
     const downloadButton = document.getElementById('downloadChartPdf');
     downloadButton?.addEventListener('click', async () => {
