@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         :root {
             --bg: #f3f6ff;
@@ -38,14 +39,20 @@
                 linear-gradient(120deg, #f8fafc 0%, #edf2ff 48%, #f2f5ff 100%),
                 var(--bg);
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .layout {
             display: grid;
             grid-template-columns: 270px 1fr;
             min-height: 100vh;
-            height: 100vh;
+            height: auto;
+            position: relative;
+        }
+
+        .layout.collapsed {
+            grid-template-columns: 78px 1fr;
         }
 
         aside {
@@ -120,6 +127,86 @@
             text-transform: uppercase;
         }
 
+        .collapse-toggle {
+            margin-left: auto;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            color: #e5edff;
+            display: inline-grid;
+            place-items: center;
+            cursor: pointer;
+            transition: background 140ms ease, transform 140ms ease, border-color 140ms ease;
+        }
+
+        .collapse-toggle:hover {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.24);
+            transform: translateY(-1px);
+        }
+
+        .mobile-toggle {
+            display: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #1f2937;
+            place-items: center;
+            cursor: pointer;
+            transition: background 140ms ease, transform 140ms ease, border-color 140ms ease;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        .mobile-toggle:hover {
+            transform: translateY(-1px);
+            border-color: #d1d5db;
+        }
+
+        .layout.collapsed aside {
+            width: 78px;
+            overflow: hidden;
+        }
+
+        .layout.collapsed .brand > div:nth-child(2),
+        .layout.collapsed .nav .section,
+        .layout.collapsed .nav a span,
+        .layout.collapsed .aside-card {
+            display: none;
+        }
+
+        .layout.collapsed .nav a {
+            padding: 11px;
+            text-align: center;
+            justify-content: center;
+            gap: 0;
+        }
+
+        .layout.collapsed .brand {
+            width: 100%;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .layout.collapsed .collapse-toggle {
+            margin-left: 0;
+        }
+
+        .layout.collapsed .brand .logo {
+            width: 42px;
+            height: 42px;
+        }
+
+        .layout.collapsed .collapse-toggle {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+        }
+
         .nav {
             display: grid;
             gap: 8px;
@@ -133,6 +220,15 @@
             font-size: 14px;
             transition: background 140ms ease, color 140ms ease, transform 140ms ease;
             border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav a i {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
         }
 
         .nav a.active,
@@ -202,8 +298,18 @@
             display: grid;
             grid-template-rows: auto 1fr auto;
             min-height: 100vh;
-            height: 100vh;
+            height: auto;
             overflow: hidden;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 180ms ease;
+            z-index: 30;
         }
 
         header {
@@ -457,27 +563,102 @@
             font-size: 13px;
         }
 
+        @media (max-width: 1200px) {
+            .layout {
+                grid-template-columns: 240px 1fr;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .layout {
+                grid-template-columns: 220px 1fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 200px 1fr;
+            }
+        }
+
         @media (max-width: 980px) {
             .layout {
                 grid-template-columns: 1fr;
             }
 
             aside {
-                position: sticky;
+                position: fixed;
                 top: 0;
-                z-index: 10;
-                padding: 16px;
-                flex-direction: row;
-                align-items: center;
+                left: 0;
+                bottom: 0;
+                width: 260px;
+                z-index: 40;
+                padding: 18px 16px;
+                flex-direction: column;
+                align-items: stretch;
                 gap: 14px;
-                overflow-x: auto;
-                overflow-y: hidden;
-                height: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 180ms ease;
+            }
+
+            .layout.collapsed {
+                grid-template-columns: 1fr;
+            }
+
+            .layout.collapsed aside {
+                width: 260px;
+                overflow: auto;
+            }
+
+            .layout.collapsed .brand > div:nth-child(2),
+            .layout.collapsed .nav .section,
+            .layout.collapsed .aside-card {
+                display: block;
+            }
+
+            .layout.collapsed .nav a span {
+                display: inline;
+            }
+
+            .layout.collapsed .nav a {
+                justify-content: flex-start;
+                gap: 10px;
+            }
+
+            .layout.mobile-open aside {
+                transform: translateX(0);
+            }
+
+            .layout.mobile-open .overlay {
+                opacity: 1;
+                pointer-events: auto;
             }
 
             .nav {
-                grid-auto-flow: column;
-                grid-auto-columns: max-content;
+                grid-auto-flow: row;
+                grid-auto-columns: unset;
+                gap: 10px;
+            }
+
+            .brand {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+
+            .aside-card {
+                flex: 0 0 auto;
+                min-width: 200px;
+            }
+
+            .collapse-toggle {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: grid;
             }
 
             .page-card,
@@ -513,6 +694,13 @@
 
             header .title {
                 font-size: 18px;
+                flex: 1 1 100%;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
             }
 
             .main {
@@ -533,7 +721,7 @@
             }
 
             table.table {
-                min-width: 640px;
+                min-width: 560px;
             }
 
             .btn,
@@ -542,15 +730,24 @@
             .btn-toggle {
                 padding: 10px 12px;
             }
+
+            .aside-card {
+                display: none;
+            }
         }
 
         @media (max-width: 520px) {
             aside {
-                padding: 14px 12px;
+                padding: 12px;
             }
 
             .brand {
                 font-size: 16px;
+            }
+
+            .collapse-toggle {
+                width: 34px;
+                height: 34px;
             }
 
             .brand .logo {
@@ -575,6 +772,10 @@
                 padding: 12px 16px;
                 font-size: 12px;
             }
+
+            table.table {
+                min-width: 520px;
+            }
         }
     </style>
 </head>
@@ -594,20 +795,21 @@
                     Global Projects
                     <small>Control Center</small>
                 </div>
+                <button type="button" class="collapse-toggle" aria-label="Toggle sidebar" title="Toggle sidebar">≡</button>
             </div>
             <nav class="nav">
-                <a class="{{ request()->is('admin/dashboard') ? 'active' : '' }}" href="{{ url('/admin/dashboard') }}">Dashboard</a>
+                <a class="{{ request()->is('admin/dashboard') ? 'active' : '' }}" href="{{ url('/admin/dashboard') }}"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></a>
                 <div class="section">Management</div>
-                <a class="{{ request()->is('agent-chat-evaluations*') ? 'active' : '' }}" href="{{ route('agent-chat-evaluations.index') }}">Agent Evaluation</a>
-                <a class="{{ request()->is('center-visit-evaluations*') ? 'active' : '' }}" href="{{ route('center-visit-evaluations.index') }}">Center Evaluation</a>
-                <a class="{{ request()->is('qa-evaluation-reports*') ? 'active' : '' }}" href="{{ route('qa-evaluation-reports.index') }}">QA Evaluation</a>
-                <a class="{{ request()->is('tl-evaluation-reports*') ? 'active' : '' }}" href="{{ route('tl-evaluation-reports.index') }}">TL Evaluation</a>
-                <a class="{{ request()->is('admin/chart-view') ? 'active' : '' }}" href="{{ route('admin.chart.view') }}">Chart View</a>
+                <a class="{{ request()->is('agent-chat-evaluations*') ? 'active' : '' }}" href="{{ route('agent-chat-evaluations.index') }}"><i class="fa-solid fa-headset"></i><span>Agent Evaluation</span></a>
+                <a class="{{ request()->is('center-visit-evaluations*') ? 'active' : '' }}" href="{{ route('center-visit-evaluations.index') }}"><i class="fa-solid fa-building"></i><span>Center Evaluation</span></a>
+                <a class="{{ request()->is('qa-evaluation-reports*') ? 'active' : '' }}" href="{{ route('qa-evaluation-reports.index') }}"><i class="fa-solid fa-clipboard-check"></i><span>QA Evaluation</span></a>
+                <a class="{{ request()->is('tl-evaluation-reports*') ? 'active' : '' }}" href="{{ route('tl-evaluation-reports.index') }}"><i class="fa-solid fa-user-shield"></i><span>TL Evaluation</span></a>
+                <a class="{{ request()->is('admin/chart-view') ? 'active' : '' }}" href="{{ route('admin.chart.view') }}"><i class="fa-solid fa-chart-line"></i><span>Chart View</span></a>
                 @if (auth('admin')->check() && (int) auth('admin')->id() === 1)
-                    <a class="{{ request()->is('admin/manage-admins*') ? 'active' : '' }}" href="{{ route('admin.management.index') }}">Manage Admin</a>
+                    <a class="{{ request()->is('admin/manage-admins*') ? 'active' : '' }}" href="{{ route('admin.management.index') }}"><i class="fa-solid fa-users-gear"></i><span>Manage Admin</span></a>
                 @endif
                 <div class="section">System</div>
-                <a class="{{ request()->is('admin/settings') ? 'active' : '' }}" href="{{ url('/admin/settings') }}">Settings</a>
+                <a class="{{ request()->is('admin/settings') ? 'active' : '' }}" href="{{ url('/admin/settings') }}"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
             </nav>
             <div class="aside-card">
                 <div class="label">Totals</div>
@@ -615,11 +817,15 @@
                 <div class="sub">{{ $centerEvalCount }} Center</div>
             </div>
         </aside>
+        <div class="overlay" aria-hidden="true"></div>
 
         <div class="content">
             <header>
+                <button type="button" class="mobile-toggle" aria-label="Open menu" title="Open menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <div class="title">@yield('header', 'Dashboard')</div>
-                <div style="display:flex;align-items:center;gap:10px;">
+                <div class="header-actions" style="display:flex;align-items:center;gap:10px;">
                     <div class="user chip">{{ auth('admin')->user()->name ?? 'Admin' }}</div>
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
@@ -651,6 +857,38 @@
             </footer>
         </div>
     </div>
+    <script>
+        (function () {
+            var layout = document.querySelector('.layout');
+            var toggle = document.querySelector('.collapse-toggle');
+            var mobileToggle = document.querySelector('.mobile-toggle');
+            var overlay = document.querySelector('.overlay');
+            if (!layout) return;
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    layout.classList.toggle('collapsed');
+                });
+            }
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function () {
+                    layout.classList.add('mobile-open');
+                });
+            }
+            if (overlay) {
+                overlay.addEventListener('click', function () {
+                    layout.classList.remove('mobile-open');
+                });
+            }
+            var navLinks = document.querySelectorAll('.nav a');
+            if (navLinks.length) {
+                navLinks.forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        layout.classList.remove('mobile-open');
+                    });
+                });
+            }
+        })();
+    </script>
     @stack('scripts')
 </body>
 </html>
