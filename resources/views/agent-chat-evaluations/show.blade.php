@@ -4,6 +4,25 @@
 @section('header', 'Evaluation Details')
 
 @section('content')
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .layout,
+        .content {
+            height: 100vh;
+        }
+
+        .main {
+            overflow-y: auto;
+            min-height: 0;
+        }
+    </style>
     <div class="page-card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div>
             <div style="font-size:18px;font-weight:700;">Evaluation #{{ $evaluation->id }}</div>

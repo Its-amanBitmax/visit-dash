@@ -4,6 +4,25 @@
 @section('header', 'Account Settings')
 
 @section('content')
+<style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .layout,
+        .content {
+            height: 100vh;
+        }
+
+        .main {
+            overflow-y: auto;
+            min-height: 0;
+        }
+    </style>
     <style>
         @media (max-width: 860px) {
             .settings-grid-2 {
